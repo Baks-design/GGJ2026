@@ -1,0 +1,236 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "coreclr",
+			"name": "GGJ2026|Editor.Windows.Debug|x64 (C#)",
+			"request": "launch",
+			"preLaunchTask": "GGJ2026|Editor.Windows.Debug|x64",
+			"cwd": "C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+			"program": "C:\\Program Files (x86)\\Flax\\Flax_1.11\\Binaries\\Editor\\Win64\\Debug\\FlaxEditor",
+			"args": [
+				"-project",
+				"C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+				"-skipCompile"
+			],
+			"stopAtEntry": false,
+			"externalConsole": true
+		},
+		{
+			"type": "coreclr",
+			"name": "GGJ2026|Editor.Windows.Debug|ARM64 (C#)",
+			"request": "launch",
+			"preLaunchTask": "GGJ2026|Editor.Windows.Debug|ARM64",
+			"cwd": "C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+			"program": "C:\\Program Files (x86)\\Flax\\Flax_1.11\\Binaries\\Editor\\Win32\\Debug\\FlaxEditor",
+			"args": [
+				"-project",
+				"C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+				"-skipCompile"
+			],
+			"stopAtEntry": false,
+			"externalConsole": true
+		},
+		{
+			"type": "coreclr",
+			"name": "GGJ2026|Editor.Windows.Development|x64 (C#)",
+			"request": "launch",
+			"preLaunchTask": "GGJ2026|Editor.Windows.Development|x64",
+			"cwd": "C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+			"program": "C:\\Program Files (x86)\\Flax\\Flax_1.11\\Binaries\\Editor\\Win64\\Development\\FlaxEditor",
+			"args": [
+				"-project",
+				"C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+				"-skipCompile"
+			],
+			"stopAtEntry": false,
+			"externalConsole": true
+		},
+		{
+			"type": "coreclr",
+			"name": "GGJ2026|Editor.Windows.Development|ARM64 (C#)",
+			"request": "launch",
+			"preLaunchTask": "GGJ2026|Editor.Windows.Development|ARM64",
+			"cwd": "C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+			"program": "C:\\Program Files (x86)\\Flax\\Flax_1.11\\Binaries\\Editor\\Win32\\Development\\FlaxEditor",
+			"args": [
+				"-project",
+				"C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+				"-skipCompile"
+			],
+			"stopAtEntry": false,
+			"externalConsole": true
+		},
+		{
+			"type": "coreclr",
+			"name": "GGJ2026|Editor.Windows.Release|x64 (C#)",
+			"request": "launch",
+			"preLaunchTask": "GGJ2026|Editor.Windows.Release|x64",
+			"cwd": "C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+			"program": "C:\\Program Files (x86)\\Flax\\Flax_1.11\\Binaries\\Editor\\Win64\\Release\\FlaxEditor",
+			"args": [
+				"-project",
+				"C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+				"-skipCompile"
+			],
+			"stopAtEntry": false,
+			"externalConsole": true
+		},
+		{
+			"type": "coreclr",
+			"name": "GGJ2026|Editor.Windows.Release|ARM64 (C#)",
+			"request": "launch",
+			"preLaunchTask": "GGJ2026|Editor.Windows.Release|ARM64",
+			"cwd": "C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+			"program": "C:\\Program Files (x86)\\Flax\\Flax_1.11\\Binaries\\Editor\\Win32\\Release\\FlaxEditor",
+			"args": [
+				"-project",
+				"C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+				"-skipCompile"
+			],
+			"stopAtEntry": false,
+			"externalConsole": true
+		},
+		{
+			"type": "coreclr",
+			"name": "GGJ2026|Game.Windows.Debug|x64 (C#)",
+			"request": "launch",
+			"preLaunchTask": "GGJ2026|Game.Windows.Debug|x64",
+			"cwd": "C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+			"program": "C:\\Program Files (x86)\\Flax\\Flax_1.11\\Binaries\\Editor\\Win64\\Debug\\FlaxEditor",
+			"args": [
+				"-project",
+				"C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+				"-skipCompile"
+			],
+			"stopAtEntry": false,
+			"externalConsole": true
+		},
+		{
+			"type": "coreclr",
+			"name": "GGJ2026|Game.Windows.Debug|Win32 (C#)",
+			"request": "launch",
+			"preLaunchTask": "GGJ2026|Game.Windows.Debug|Win32",
+			"cwd": "C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+			"program": "C:\\Program Files (x86)\\Flax\\Flax_1.11\\Binaries\\Editor\\Win32\\Debug\\FlaxEditor",
+			"args": [
+				"-project",
+				"C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+				"-skipCompile"
+			],
+			"stopAtEntry": false,
+			"externalConsole": true
+		},
+		{
+			"type": "coreclr",
+			"name": "GGJ2026|Game.Windows.Debug|ARM64 (C#)",
+			"request": "launch",
+			"preLaunchTask": "GGJ2026|Game.Windows.Debug|ARM64",
+			"cwd": "C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+			"program": "C:\\Program Files (x86)\\Flax\\Flax_1.11\\Binaries\\Editor\\Win32\\Debug\\FlaxEditor",
+			"args": [
+				"-project",
+				"C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+				"-skipCompile"
+			],
+			"stopAtEntry": false,
+			"externalConsole": true
+		},
+		{
+			"type": "coreclr",
+			"name": "GGJ2026|Game.Windows.Development|x64 (C#)",
+			"request": "launch",
+			"preLaunchTask": "GGJ2026|Game.Windows.Development|x64",
+			"cwd": "C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+			"program": "C:\\Program Files (x86)\\Flax\\Flax_1.11\\Binaries\\Editor\\Win64\\Development\\FlaxEditor",
+			"args": [
+				"-project",
+				"C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+				"-skipCompile"
+			],
+			"stopAtEntry": false,
+			"externalConsole": true
+		},
+		{
+			"type": "coreclr",
+			"name": "GGJ2026|Game.Windows.Development|Win32 (C#)",
+			"request": "launch",
+			"preLaunchTask": "GGJ2026|Game.Windows.Development|Win32",
+			"cwd": "C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+			"program": "C:\\Program Files (x86)\\Flax\\Flax_1.11\\Binaries\\Editor\\Win32\\Development\\FlaxEditor",
+			"args": [
+				"-project",
+				"C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+				"-skipCompile"
+			],
+			"stopAtEntry": false,
+			"externalConsole": true
+		},
+		{
+			"type": "coreclr",
+			"name": "GGJ2026|Game.Windows.Development|ARM64 (C#)",
+			"request": "launch",
+			"preLaunchTask": "GGJ2026|Game.Windows.Development|ARM64",
+			"cwd": "C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+			"program": "C:\\Program Files (x86)\\Flax\\Flax_1.11\\Binaries\\Editor\\Win32\\Development\\FlaxEditor",
+			"args": [
+				"-project",
+				"C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+				"-skipCompile"
+			],
+			"stopAtEntry": false,
+			"externalConsole": true
+		},
+		{
+			"type": "coreclr",
+			"name": "GGJ2026|Game.Windows.Release|x64 (C#)",
+			"request": "launch",
+			"preLaunchTask": "GGJ2026|Game.Windows.Release|x64",
+			"cwd": "C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+			"program": "C:\\Program Files (x86)\\Flax\\Flax_1.11\\Binaries\\Editor\\Win64\\Release\\FlaxEditor",
+			"args": [
+				"-project",
+				"C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+				"-skipCompile"
+			],
+			"stopAtEntry": false,
+			"externalConsole": true
+		},
+		{
+			"type": "coreclr",
+			"name": "GGJ2026|Game.Windows.Release|Win32 (C#)",
+			"request": "launch",
+			"preLaunchTask": "GGJ2026|Game.Windows.Release|Win32",
+			"cwd": "C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+			"program": "C:\\Program Files (x86)\\Flax\\Flax_1.11\\Binaries\\Editor\\Win32\\Release\\FlaxEditor",
+			"args": [
+				"-project",
+				"C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+				"-skipCompile"
+			],
+			"stopAtEntry": false,
+			"externalConsole": true
+		},
+		{
+			"type": "coreclr",
+			"name": "GGJ2026|Game.Windows.Release|ARM64 (C#)",
+			"request": "launch",
+			"preLaunchTask": "GGJ2026|Game.Windows.Release|ARM64",
+			"cwd": "C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+			"program": "C:\\Program Files (x86)\\Flax\\Flax_1.11\\Binaries\\Editor\\Win32\\Release\\FlaxEditor",
+			"args": [
+				"-project",
+				"C:\\Users\\Adriano Albuquerque\\Documents\\Flax Projects\\GGJ2026",
+				"-skipCompile"
+			],
+			"stopAtEntry": false,
+			"externalConsole": true
+		},
+		{
+			"type": "coreclr",
+			"name": "GGJ2026 (C# Attach Editor)",
+			"request": "attach",
+			"processName": "FlaxEditor"
+		}
+	]
+}

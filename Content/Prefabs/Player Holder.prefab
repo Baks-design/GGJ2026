@@ -1,0 +1,82 @@
+{
+	"ID": "4ef2c55d4e577ee03cc93180479e50ea",
+	"TypeName": "FlaxEngine.Prefab",
+	"EngineBuild": 6802,
+	"Data": [
+	{
+		"ID": "9855209549e9b14c58b5a99a1125e9a9",
+		"TypeName": "FlaxEngine.RigidBody",
+		"Name": "Player Holder",
+		"StaticFlags": 0,
+		"Layer": 1,
+		"Mass": 163.6246337890625,
+		"Constraints": 56,
+		"EnableGravity": false
+	},
+	{
+		"ID": "a7b3fcc14d648ecbe71fcc95ba2e1dea",
+		"TypeName": "GGJ2026.Gameplay.Character.CharacterMovement",
+		"ParentID": "9855209549e9b14c58b5a99a1125e9a9",
+		"V": {
+	"playerInputSpace": "b4b2ccd34303ab2ca74028aeccc84dcd",
+	"capsuleCollider": "05191c114406af287d4cd491936bbf1a",
+	"body": "9855209549e9b14c58b5a99a1125e9a9",
+	"probeMask": {
+		"Mask": 57
+	},
+	"stairsMask": {
+		"Mask": 8
+	},
+	"climbMask": {
+		"Mask": 43
+	},
+	"waterMask": {
+		"Mask": 64
+	}
+}
+	},
+	{
+		"ID": "05191c114406af287d4cd491936bbf1a",
+		"TypeName": "FlaxEngine.CapsuleCollider",
+		"ParentID": "9855209549e9b14c58b5a99a1125e9a9",
+		"Name": "CapsuleCollider",
+		"Transform": {
+			"Orientation": {
+				"X": 0.5,
+				"Y": 0.5,
+				"Z": 0.5,
+				"W": 0.5
+			}
+		},
+		"StaticFlags": 0,
+		"Layer": 1,
+		"Material": "476da17040f0b383028138bcf8344e33",
+		"Center": {
+			"X": 50.0,
+			"Y": 0.0,
+			"Z": 0.0
+		},
+		"Radius": 25.0,
+		"Height": 50.0
+	},
+	{
+		"ID": "e99f40e14fca0989646e29b82f437b43",
+		"TypeName": "FlaxEngine.StaticModel",
+		"ParentID": "9855209549e9b14c58b5a99a1125e9a9",
+		"Name": "StaticModel",
+		"StaticFlags": 0,
+		"Layer": 1,
+		"Model": "3f82e57744f57c28285150b646ad2198",
+		"Buffer": {
+			"Entries": [
+				{
+					"Material": "00000000000000000000000000000000",
+					"ShadowsMode": 3,
+					"Visible": true,
+					"ReceiveDecals": true
+				}
+			]
+		}
+	}
+]
+}

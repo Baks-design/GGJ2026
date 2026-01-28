@@ -1,0 +1,121 @@
+{
+	"ID": "f4c1c67842f6b745a6976aa8e7eff360",
+	"TypeName": "FlaxEditor.Content.Settings.InputSettings",
+	"EngineBuild": 6802,
+	"Data": {
+	"ActionMappings": [
+		{
+			"Name": "Pause",
+			"Mode": 1,
+			"Key": 27,
+			"MouseButton": 0,
+			"GamepadButton": 0,
+			"Gamepad": 0
+		},
+		{
+			"Name": "LeftMask",
+			"Mode": 0,
+			"Key": 0,
+			"MouseButton": 1,
+			"GamepadButton": 0,
+			"Gamepad": 0
+		},
+		{
+			"Name": "RightMask",
+			"Mode": 0,
+			"Key": 0,
+			"MouseButton": 3,
+			"GamepadButton": 0,
+			"Gamepad": 0
+		},
+		{
+			"Name": "Jump",
+			"Mode": 1,
+			"Key": 32,
+			"MouseButton": 3,
+			"GamepadButton": 0,
+			"Gamepad": 0
+		},
+		{
+			"Name": "Climb",
+			"Mode": 0,
+			"Key": 67,
+			"MouseButton": 3,
+			"GamepadButton": 0,
+			"Gamepad": 0
+		}
+	],
+	"AxisMappings": [
+		{
+			"Name": "MoveHorizontal",
+			"Axis": 9,
+			"Gamepad": 0,
+			"PositiveButton": 68,
+			"NegativeButton": 65,
+			"GamepadPositiveButton": 0,
+			"GamepadNegativeButton": 0,
+			"DeadZone": 0.1,
+			"Sensitivity": 1.0,
+			"Gravity": 1.0,
+			"Scale": 1.0,
+			"Snap": false
+		},
+		{
+			"Name": "MoveVertical",
+			"Axis": 9,
+			"Gamepad": 0,
+			"PositiveButton": 87,
+			"NegativeButton": 83,
+			"GamepadPositiveButton": 0,
+			"GamepadNegativeButton": 0,
+			"DeadZone": 0.1,
+			"Sensitivity": 1.0,
+			"Gravity": 1.0,
+			"Scale": 1.0,
+			"Snap": false
+		},
+		{
+			"Name": "LookHorizontal",
+			"Axis": 0,
+			"Gamepad": 0,
+			"PositiveButton": 0,
+			"NegativeButton": 0,
+			"GamepadPositiveButton": 0,
+			"GamepadNegativeButton": 0,
+			"DeadZone": 0.1,
+			"Sensitivity": 1.0,
+			"Gravity": 1.0,
+			"Scale": 1.0,
+			"Snap": false
+		},
+		{
+			"Name": "LookVertical",
+			"Axis": 1,
+			"Gamepad": 0,
+			"PositiveButton": 0,
+			"NegativeButton": 0,
+			"GamepadPositiveButton": 0,
+			"GamepadNegativeButton": 0,
+			"DeadZone": 0.1,
+			"Sensitivity": 1.0,
+			"Gravity": 1.0,
+			"Scale": 1.0,
+			"Snap": false
+		},
+		{
+			"Name": "UpDown",
+			"Axis": 9,
+			"Gamepad": 0,
+			"PositiveButton": 32,
+			"NegativeButton": 17,
+			"GamepadPositiveButton": 0,
+			"GamepadNegativeButton": 0,
+			"DeadZone": 0.1,
+			"Sensitivity": 1.0,
+			"Gravity": 1.0,
+			"Scale": 1.0,
+			"Snap": false
+		}
+	]
+}
+}

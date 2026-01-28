@@ -1,0 +1,21 @@
+{
+	"settings": {
+		"typescript.tsc.autoDetect": "off",
+		"npm.autoDetect": "off",
+		"gulp.autoDetect": "off",
+		"jake.autoDetect": "off",
+		"grunt.autoDetect": "off",
+		"omnisharp.useModernNet": true,
+		"dotnet.defaultSolution": "GGJ2026.sln"
+	},
+	"folders": [
+		{
+			"name": "GGJ2026",
+			"path": "."
+		},
+		{
+			"name": "Flax",
+			"path": "C:\\Program Files (x86)\\Flax\\Flax_1.11"
+		}
+	]
+}

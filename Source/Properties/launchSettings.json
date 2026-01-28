@@ -1,0 +1,11 @@
+﻿{
+  "profiles": {
+    "Game": {
+      "commandName": "Executable",
+      "workingDirectory": "C:/Users/Adriano Albuquerque/Documents/Flax Projects/GGJ2026",
+      "executablePath": "C:/Program Files (x86)/Flax/Flax_1.11/Binaries/Editor/Win64/Development/FlaxEditor.exe",
+      "commandLineArgs": "-project \"C:/Users/Adriano Albuquerque/Documents/Flax Projects/GGJ2026\"",
+      "nativeDebugging": false
+    }
+  }
+}

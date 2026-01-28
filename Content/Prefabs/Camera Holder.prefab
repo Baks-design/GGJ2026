@@ -1,0 +1,37 @@
+{
+	"ID": "7bead0dc4e0595fc46e3978357d9aa6e",
+	"TypeName": "FlaxEngine.Prefab",
+	"EngineBuild": 6802,
+	"Data": [
+	{
+		"ID": "1922fbef4d6aad25316eae8b45811ba6",
+		"TypeName": "FlaxEngine.EmptyActor",
+		"Name": "Camera Holder",
+		"StaticFlags": 0
+	},
+	{
+		"ID": "4e7332984d68cb7ffc376d999aea3e3f",
+		"TypeName": "GGJ2026.Gameplay.Character.CharacterCamera",
+		"ParentID": "1922fbef4d6aad25316eae8b45811ba6",
+		"V": {
+	"focus": "36bb4ffc40a454d270a3e29b0bbe2b71",
+	"camera": "b76949a6450777636996ef8d6d009a52",
+	"obstructionMask": {
+		"Mask": 4294967197
+	},
+	"focusCentering": 0.75,
+	"rotationSpeed": 100.0,
+	"minVerticalAngle": -30.0,
+	"maxVerticalAngle": 60.0
+}
+	},
+	{
+		"ID": "b76949a6450777636996ef8d6d009a52",
+		"TypeName": "FlaxEngine.Camera",
+		"ParentID": "1922fbef4d6aad25316eae8b45811ba6",
+		"Name": "Camera",
+		"StaticFlags": 0,
+		"Far": 10000.0
+	}
+]
+}
