@@ -1,0 +1,15 @@
+{
+	"ID": "77952e1f437cb060b70dc5872d051137",
+	"TypeName": "FlaxEngine.Prefab",
+	"EngineBuild": 6802,
+	"Data": [
+	{
+		"ID": "f98048ea4c5d4fa675ef8e9c09f50114",
+		"TypeName": "FlaxEngine.Camera",
+		"ParentID": "00000000000000000000000000000000",
+		"Name": "Camera",
+		"StaticFlags": 0,
+		"Far": 10000.0
+	}
+]
+}

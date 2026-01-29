@@ -376,10 +376,11 @@
     <Compile Include="Game\Application\Input\InputType.cs" />
     <Compile Include="Game\Application\Misc\ExitOnEsc.cs" />
     <Compile Include="Game\Application\Misc\PerfCounter.cs" />
-    <Compile Include="Game\Gameplay\Character\CharacterCamera.cs" />
-    <Compile Include="Game\Gameplay\Character\CharacterMovement.cs" />
-    <Compile Include="Game\Gameplay\Character\CustomGravity.cs" />
-    <Compile Include="Game\Gameplay\Character\GravitySource.cs" />
+    <Compile Include="Game\Gameplay\Character\CharacterHealth.cs" />
+    <Compile Include="Game\Gameplay\Character\IDamageable.cs" />
+    <Compile Include="Game\Gameplay\Character\InputManager.cs" />
+    <Compile Include="Game\Gameplay\Character\PlayerController.cs" />
+    <Compile Include="Game\Gameplay\Character\Projectile.cs" />
     <Compile Include="Game\Utils\Extensions\QuaternionExtensions.cs" />
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Editor.Windows.Debug|x64' " >
