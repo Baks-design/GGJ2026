@@ -112,9 +112,9 @@
 			"Name": "Floor",
 			"Transform": {
 				"Scale": {
-					"X": 25.0,
+					"X": 113.97999572753906,
 					"Y": 0.5,
-					"Z": 25.0
+					"Z": 53.94999694824219
 				}
 			},
 			"Model": "b43f0f8f4aaba3f3156896a5a22ba493",
@@ -139,7 +139,7 @@
 			"ID": "e1c92bcc4eb069c29f0a5e9c605ec5ef",
 			"TypeName": "FlaxEngine.StaticModel",
 			"ParentID": "74a68a984824b4510d12589f199ad68f",
-			"Name": "Cube",
+			"Name": "Target",
 			"Transform": {
 				"Translation": {
 					"X": 6.8406219482421875,
@@ -147,6 +147,7 @@
 					"Z": 189.731201171875
 				}
 			},
+			"Layer": 2,
 			"Model": "b43f0f8f4aaba3f3156896a5a22ba493",
 			"Buffer": {
 				"Entries": [
@@ -163,7 +164,8 @@
 			"ID": "f05185004d85b1695fc5b1ae710ba373",
 			"TypeName": "FlaxEngine.BoxCollider",
 			"ParentID": "e1c92bcc4eb069c29f0a5e9c605ec5ef",
-			"Name": "BoxCollider"
+			"Name": "BoxCollider",
+			"Layer": 2
 		},
 		{
 			"ID": "f80db7f247cf0ceabea12e9043ad461e",
@@ -173,8 +175,8 @@
 			"Transform": {
 				"Translation": {
 					"X": 0.0,
-					"Y": 418.0,
-					"Z": -438.0
+					"Y": 633.0,
+					"Z": -767.0
 				},
 				"Orientation": {
 					"X": 0.3826834559440613,
@@ -192,13 +194,10 @@
 			"Transform": {
 				"Translation": {
 					"X": 0.0,
-					"Y": 15.969589233398438,
-					"Z": -104.3388671875
+					"Y": 284.9696044921875,
+					"Z": -287.3388671875
 				}
-			},
-			"RemovedObjects": [
-				"5d62f6e847b803e47ded608d604175a6"
-			]
+			}
 		},
 		{
 			"ID": "3378e0134e80ca9766a074a64dc31e42",
@@ -212,10 +211,7 @@
 			"PrefabID": "918f610a423bf51c50e7cd9c7d7d7668",
 			"PrefabObjectID": "62078d97468bcd479f32a0b244a5e417",
 			"ParentID": "c6ed10eb42fe93e436f991a151354d04",
-			"V": {
-	"controller": "c6ed10eb42fe93e436f991a151354d04",
-	"mainCamera": "f80db7f247cf0ceabea12e9043ad461e"
-}
+			"V": {}
 		},
 		{
 			"ID": "f44effa440ee6e79a228a3bcd1ef5efd",
@@ -230,19 +226,21 @@
 			"ParentID": "c6ed10eb42fe93e436f991a151354d04"
 		},
 		{
-			"ID": "feb3a3eb40b0c5a6fe63d5ac9076663c",
-			"PrefabID": "918f610a423bf51c50e7cd9c7d7d7668",
-			"PrefabObjectID": "d30ac58447973b74beeeb6b044e0a6e6",
-			"ParentID": "9ef59b884e4cdadaefa078bd7d2589c1",
-			"Buffer": {
-				"Entries": []
-			}
-		},
-		{
 			"ID": "ef3fff4b4558068c6988f58fa7db89a8",
 			"PrefabID": "918f610a423bf51c50e7cd9c7d7d7668",
 			"PrefabObjectID": "efb05c23462778cb0e9a3d8caadc0062",
-			"ParentID": "feb3a3eb40b0c5a6fe63d5ac9076663c",
+			"ParentID": "9ef59b884e4cdadaefa078bd7d2589c1",
+			"Buffer": {
+				"Entries": [
+					{}
+				]
+			}
+		},
+		{
+			"ID": "fda1ea42492232c4041846885673351b",
+			"PrefabID": "918f610a423bf51c50e7cd9c7d7d7668",
+			"PrefabObjectID": "404dba544746e81c7cf682abc372e8a8",
+			"ParentID": "ef3fff4b4558068c6988f58fa7db89a8",
 			"Buffer": {
 				"Entries": [
 					{}

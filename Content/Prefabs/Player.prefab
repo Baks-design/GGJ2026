@@ -29,9 +29,25 @@
 		"ParentID": "445a5ff24986c96fe96b1eafc3f09241",
 		"V": {
 	"controller": "445a5ff24986c96fe96b1eafc3f09241",
-	"playerModel": "d30ac58447973b74beeeb6b044e0a6e6",
-	"mainCamera": "f80db7f247cf0ceabea12e9043ad461e",
-	"weaponPivot": "27fc488c4826c568d960c0b629491e45"
+	"playerModel": "efb05c23462778cb0e9a3d8caadc0062",
+	"cameraPivot": "a9d6c66e48a37386108726a2478c593d",
+	"targetsAims": {
+		"Mask": 4
+	},
+	"targetAimCheckRadius": 500.0,
+	"mouseCameraHeight": 500.0,
+	"mouseCameraDistance": 500.0,
+	"gravityMultiplier": 4.0,
+	"moveSpeed": 500.0,
+	"rotationSpeed": 100.0,
+	"jumpForce": 350.0,
+	"dashSpeed": 500.0,
+	"projectilePrefab": "5f1e08a44600966d6401fb9940d3493e",
+	"weaponPivot": "27fc488c4826c568d960c0b629491e45",
+	"muzzlePoints": [
+		"27fc488c4826c568d960c0b629491e45"
+	],
+	"automaticFire": false
 }
 	},
 	{
@@ -55,21 +71,42 @@
 		"Layer": 1
 	},
 	{
-		"ID": "d30ac58447973b74beeeb6b044e0a6e6",
-		"TypeName": "FlaxEngine.AnimatedModel",
+		"ID": "efb05c23462778cb0e9a3d8caadc0062",
+		"TypeName": "FlaxEngine.StaticModel",
 		"ParentID": "05d0e934458334b88a98ef81dee33b76",
-		"Name": "AnimatedModel",
+		"Name": "StaticModel",
+		"StaticFlags": 0,
+		"Layer": 1,
+		"Model": "3f82e57744f57c28285150b646ad2198",
 		"Buffer": {
-			"Entries": []
+			"Entries": [
+				{
+					"Material": "00000000000000000000000000000000",
+					"ShadowsMode": 3,
+					"Visible": true,
+					"ReceiveDecals": true
+				}
+			]
 		}
 	},
 	{
-		"ID": "efb05c23462778cb0e9a3d8caadc0062",
+		"ID": "404dba544746e81c7cf682abc372e8a8",
 		"TypeName": "FlaxEngine.StaticModel",
-		"ParentID": "d30ac58447973b74beeeb6b044e0a6e6",
+		"ParentID": "efb05c23462778cb0e9a3d8caadc0062",
 		"Name": "StaticModel",
-		"Layer": 1,
-		"Model": "3f82e57744f57c28285150b646ad2198",
+		"Transform": {
+			"Translation": {
+				"X": 0.0,
+				"Y": 68.45326232910156,
+				"Z": 25.505691528320313
+			},
+			"Scale": {
+				"X": 0.07000002264976501,
+				"Y": 0.12999999523162842,
+				"Z": 0.30000004172325134
+			}
+		},
+		"Model": "b43f0f8f4aaba3f3156896a5a22ba493",
 		"Buffer": {
 			"Entries": [
 				{
@@ -96,8 +133,8 @@
 		"Transform": {
 			"Translation": {
 				"X": 0.0,
-				"Y": 60.59545135498047,
-				"Z": 33.27128601074219
+				"Y": 60.59544372558594,
+				"Z": 42.83727264404297
 			}
 		},
 		"StaticFlags": 0,

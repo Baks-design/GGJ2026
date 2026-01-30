@@ -80,10 +80,4 @@ public class CharacterHealth : Script, IDamageable
         if (Mathf.Abs(currentHealth - oldHealth) > 0.01f)
             HealthChanged?.Invoke(currentHealth);
     }
-
-    public override void OnDestroy()
-    {
-        Death = null;
-        HealthChanged = null;
-    }
 }

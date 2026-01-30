@@ -1,17 +1,14 @@
-namespace GGJ2026.Gameplay.Character;
-
 using FlaxEngine;
+
+namespace GGJ2026.Gameplay.Character;
 
 public static class InputManager
 {
     public enum InputType { KeyboardMouse, Gamepad }
-
     static InputGamepadIndex activeGamepad = InputGamepadIndex.Gamepad1;
+    static Vector2 smoothedAimCache = Vector2.Zero;
     const float StickDeadzone = 0.2f;
     const float TriggerDeadzone = 0.1f;
-    static Vector2 smoothedAimCache = Vector2.Zero;
-    static float _vibrationEndTime = 0f;
-    static bool _isVibrating = false;
 
     public static InputType CurrentInputType { get; private set; } = InputType.KeyboardMouse;
     public static bool IsGamepadConnected { get; private set; } = false;
@@ -22,18 +19,20 @@ public static class InputManager
         Input.GamepadsChanged += OnGamepadsChanged;
     }
 
+    public static void Dispose() => Input.GamepadsChanged -= OnGamepadsChanged;
+
     #region Movement and Aiming Input
     public static Vector2 GetMovement()
     {
-        Vector2 movement = Vector2.Zero;
+        var movement = Vector2.Zero;
 
-        if (CurrentInputType == InputType.KeyboardMouse)
+        if (CurrentInputType is InputType.KeyboardMouse)
         {
             // Keyboard movement (WASD)
             movement.X = GetKeyboardHorizontal();
             movement.Y = GetKeyboardVertical();
         }
-        else
+        else if (CurrentInputType is InputType.Gamepad)
         {
             // Gamepad left stick movement
             movement = GetGamepadLeftStick();
@@ -51,15 +50,13 @@ public static class InputManager
 
     public static Vector2 GetAiming()
     {
-        Vector2 aiming = Vector2.Zero;
+        var aiming = Vector2.Zero;
 
-        if (CurrentInputType == InputType.KeyboardMouse)
-        {
+        if (CurrentInputType is InputType.KeyboardMouse)
             // For mouse aiming, we need special handling in PlayerController
             // This just returns zero - actual mouse aiming is handled in HandleMouseAiming()
-            aiming = Vector2.Zero;
-        }
-        else
+            aiming = Input.MousePosition;
+        else if (CurrentInputType is InputType.Gamepad)
         {
             // Gamepad right stick aiming
             aiming = GetGamepadRightStick();
@@ -67,8 +64,8 @@ public static class InputManager
             // If no right stick input, aim in movement direction
             if (aiming.Length < StickDeadzone)
             {
-                Vector2 move = GetMovement();
-                aiming = move.Length > 0 ? move.Normalized : Vector2.Zero;
+                var move = GetMovement();
+                aiming = move.Length > 0f ? move.Normalized : Vector2.Zero;
             }
         }
 
@@ -84,9 +81,22 @@ public static class InputManager
     #endregion
 
     #region Gamepad Methods
+    // Helper method to safely get the active gamepad
+    private static Gamepad GetActiveGamepad()
+    {
+        if (!IsGamepadConnected)
+            return null;
+
+        int index = (int)activeGamepad;
+        if (index < 0 || index >= Input.Gamepads.Length)
+            return null;
+
+        return Input.Gamepads[index];
+    }
+
     public static Vector2 GetGamepadLeftStick()
     {
-        var gamepad = Input.Gamepads[(int)activeGamepad];
+        var gamepad = GetActiveGamepad();
         if (gamepad == null)
             return Vector2.Zero;
 
@@ -98,7 +108,7 @@ public static class InputManager
 
     public static Vector2 GetGamepadRightStick()
     {
-        var gamepad = Input.Gamepads[(int)activeGamepad];
+        var gamepad = GetActiveGamepad();
         if (gamepad == null)
             return Vector2.Zero;
 
@@ -110,7 +120,7 @@ public static class InputManager
 
     public static float GetGamepadLeftTrigger()
     {
-        var gamepad = Input.Gamepads[(int)activeGamepad];
+        var gamepad = GetActiveGamepad();
         if (gamepad == null)
             return 0f;
 
@@ -120,7 +130,7 @@ public static class InputManager
 
     public static float GetGamepadRightTrigger()
     {
-        var gamepad = Input.Gamepads[(int)activeGamepad];
+        var gamepad = GetActiveGamepad();
         if (gamepad == null)
             return 0f;
 
@@ -130,21 +140,27 @@ public static class InputManager
 
     public static bool GetGamepadButton(GamepadButton button)
     {
-        var gamepad = Input.Gamepads[(int)activeGamepad];
-        return gamepad != null && gamepad.GetButton(button);
+        var gamepad = GetActiveGamepad();
+        if (gamepad == null)
+            return false;
+
+        return gamepad.GetButton(button);
     }
 
     public static bool GetGamepadButtonDown(GamepadButton button)
     {
-        var gamepad = Input.Gamepads[(int)activeGamepad];
-        return gamepad != null && gamepad.GetButtonDown(button);
+        var gamepad = GetActiveGamepad();
+        if (gamepad == null)
+            return false;
+
+        return gamepad.GetButtonDown(button);
     }
     #endregion
 
     #region Keyboard Methods
     public static float GetKeyboardHorizontal()
     {
-        float value = 0f;
+        var value = 0f;
         if (Input.GetKey(KeyboardKeys.D) || Input.GetKey(KeyboardKeys.ArrowRight)) value += 1f;
         if (Input.GetKey(KeyboardKeys.A) || Input.GetKey(KeyboardKeys.ArrowLeft)) value -= 1f;
         return value;
@@ -152,7 +168,7 @@ public static class InputManager
 
     public static float GetKeyboardVertical()
     {
-        float value = 0f;
+        var value = 0f;
         if (Input.GetKey(KeyboardKeys.W) || Input.GetKey(KeyboardKeys.ArrowUp)) value += 1f;
         if (Input.GetKey(KeyboardKeys.S) || Input.GetKey(KeyboardKeys.ArrowDown)) value -= 1f;
         return value;
@@ -160,7 +176,7 @@ public static class InputManager
 
     public static float GetKeyboardAimHorizontal()
     {
-        float value = 0f;
+        var value = 0f;
         if (Input.GetKey(KeyboardKeys.L) || Input.GetKey(KeyboardKeys.ArrowRight)) value += 1f;
         if (Input.GetKey(KeyboardKeys.J) || Input.GetKey(KeyboardKeys.ArrowLeft)) value -= 1f;
         return value;
@@ -168,7 +184,7 @@ public static class InputManager
 
     public static float GetKeyboardAimVertical()
     {
-        float value = 0f;
+        var value = 0f;
         if (Input.GetKey(KeyboardKeys.I) || Input.GetKey(KeyboardKeys.ArrowUp)) value += 1f;
         if (Input.GetKey(KeyboardKeys.K) || Input.GetKey(KeyboardKeys.ArrowDown)) value -= 1f;
         return value;
@@ -178,57 +194,50 @@ public static class InputManager
     #region Action Buttons
     public static bool GetReload()
     {
-        bool keyboardReload = Input.GetKey(KeyboardKeys.R);
-        bool gamepadReload = GetGamepadButton(GamepadButton.Y);
+        var keyboardReload = Input.GetKey(KeyboardKeys.R);
+        var gamepadReload = GetGamepadButton(GamepadButton.Y);
         return keyboardReload || gamepadReload;
     }
 
     public static bool GetFire()
     {
-        bool keyboardFire = Input.GetMouseButton(MouseButton.Left) ||
-                           Input.GetKey(KeyboardKeys.Spacebar);
-        bool gamepadFire = GetGamepadRightTrigger() > 0.5f ||
-                          GetGamepadButton(GamepadButton.RightShoulder) ||
-                          GetGamepadButton(GamepadButton.A);
+        var keyboardFire = Input.GetMouseButton(MouseButton.Left);
+        var gamepadFire = GetGamepadRightTrigger() > 0.5f;
         return keyboardFire || gamepadFire;
     }
 
     public static bool GetFireDown()
     {
-        bool keyboardFire = Input.GetMouseButtonDown(MouseButton.Left) ||
-                           Input.GetKeyDown(KeyboardKeys.Spacebar);
-        bool gamepadFire = GetGamepadButtonDown(GamepadButton.RightShoulder) ||
-                          GetGamepadButtonDown(GamepadButton.A);
+        var keyboardFire = Input.GetMouseButtonDown(MouseButton.Left);
+        var gamepadFire = GetGamepadRightTrigger() > 0.5f;
         return keyboardFire || gamepadFire;
     }
 
     public static bool GetDash()
     {
-        bool keyboardDash = Input.GetKey(KeyboardKeys.Shift);
-        bool gamepadDash = GetGamepadButton(GamepadButton.LeftShoulder) ||
-                          GetGamepadButton(GamepadButton.X);
+        var keyboardDash = Input.GetKey(KeyboardKeys.Shift);
+        var gamepadDash = GetGamepadButton(GamepadButton.X);
         return keyboardDash || gamepadDash;
     }
 
     public static bool GetDashDown()
     {
-        bool keyboardDash = Input.GetKeyDown(KeyboardKeys.Shift);
-        bool gamepadDash = GetGamepadButtonDown(GamepadButton.LeftShoulder) ||
-                          GetGamepadButtonDown(GamepadButton.X);
+        var keyboardDash = Input.GetKeyDown(KeyboardKeys.Shift);
+        var gamepadDash = GetGamepadButtonDown(GamepadButton.X);
         return keyboardDash || gamepadDash;
     }
 
     public static bool GetJump()
     {
-        bool keyboardJump = Input.GetKey(KeyboardKeys.Spacebar);
-        bool gamepadJump = GetGamepadButton(GamepadButton.A);
+        var keyboardJump = Input.GetKey(KeyboardKeys.Spacebar);
+        var gamepadJump = GetGamepadButton(GamepadButton.A);
         return keyboardJump || gamepadJump;
     }
 
     public static bool GetJumpDown()
     {
-        bool keyboardJump = Input.GetKeyDown(KeyboardKeys.Spacebar);
-        bool gamepadJump = GetGamepadButtonDown(GamepadButton.A);
+        var keyboardJump = Input.GetKeyDown(KeyboardKeys.Spacebar);
+        var gamepadJump = GetGamepadButtonDown(GamepadButton.A);
         return keyboardJump || gamepadJump;
     }
     #endregion
@@ -237,54 +246,68 @@ public static class InputManager
     static void CheckGamepadConnection()
     {
         // Check all gamepad indices
-        for (int i = 0; i < Input.Gamepads.Length; i++)
+        for (var i = 0; i < Input.Gamepads.Length; i++)
         {
             var gamepad = Input.Gamepads[i];
             if (gamepad != null)
             {
                 IsGamepadConnected = true;
                 activeGamepad = (InputGamepadIndex)i;
+                CurrentInputType = InputType.Gamepad;
                 return;
             }
         }
+
+        // No gamepad found
         IsGamepadConnected = false;
+        CurrentInputType = InputType.KeyboardMouse;
     }
 
     static void OnGamepadsChanged()
     {
-        bool wasConnected = IsGamepadConnected;
+        var wasConnected = IsGamepadConnected;
         CheckGamepadConnection();
 
-        if (wasConnected && !IsGamepadConnected && CurrentInputType == InputType.Gamepad)
-        {
+        if (wasConnected && !IsGamepadConnected && CurrentInputType is InputType.Gamepad)
             CurrentInputType = InputType.KeyboardMouse;
-        }
     }
 
     public static void DetectInputType()
     {
         // Check for any gamepad input
-        bool gamepadInput = false;
+        var gamepadInput = false;
 
         if (IsGamepadConnected)
         {
-            var gamepad = Input.Gamepads[(int)activeGamepad];
+            var gamepad = GetActiveGamepad();
             if (gamepad != null)
             {
-                Vector2 leftStick = GetGamepadLeftStick();
-                Vector2 rightStick = GetGamepadRightStick();
+                var leftStick = GetGamepadLeftStick();
+                var rightStick = GetGamepadRightStick();
 
                 // Check if any button is pressed or sticks are moved
                 gamepadInput = leftStick.Length > StickDeadzone ||
                               rightStick.Length > StickDeadzone ||
-                              gamepad.GetButton(GamepadButton.MAX);
+                              gamepad.GetButton(GamepadButton.A) ||
+                              gamepad.GetButton(GamepadButton.B) ||
+                              gamepad.GetButton(GamepadButton.X) ||
+                              gamepad.GetButton(GamepadButton.Y) ||
+                              gamepad.GetButton(GamepadButton.LeftShoulder) ||
+                              gamepad.GetButton(GamepadButton.RightShoulder) ||
+                              gamepad.GetButton(GamepadButton.Start) ||
+                              gamepad.GetButton(GamepadButton.Back);
             }
         }
 
         // Check for keyboard/mouse input
-        bool keyboardMouseInput =
-            Input.GetKeyDown(KeyboardKeys.MAX) ||
-            Input.GetMouseButtonDown(MouseButton.MAX) ||
+        var keyboardMouseInput =
+            Input.GetKeyDown(KeyboardKeys.A) ||
+            Input.GetKeyDown(KeyboardKeys.W) ||
+            Input.GetKeyDown(KeyboardKeys.S) ||
+            Input.GetKeyDown(KeyboardKeys.D) ||
+            Input.GetMouseButtonDown(MouseButton.Left) ||
+            Input.GetMouseButtonDown(MouseButton.Right) ||
+            Input.GetMouseButtonDown(MouseButton.Middle) ||
             Input.MousePositionDelta.Length > 0.01f;
 
         // Update input type (prefer gamepad if both inputs)
@@ -296,13 +319,12 @@ public static class InputManager
 
     private static Vector2 ApplyCircularDeadzone(Vector2 input, float deadzone)
     {
-        float magnitude = input.Length;
-
+        var magnitude = input.Length;
         if (magnitude < deadzone)
             return Vector2.Zero;
 
         // Normalize and rescale to 0-1 range
-        float normalizedMagnitude = (magnitude - deadzone) / (1f - deadzone);
+        var normalizedMagnitude = (magnitude - deadzone) / (1f - deadzone);
         return input.Normalized * normalizedMagnitude;
     }
     #endregion
@@ -312,8 +334,9 @@ public static class InputManager
     {
         if (!IsGamepadConnected) return;
 
-        var gamepad = Input.Gamepads[(int)activeGamepad];
+        var gamepad = GetActiveGamepad();
         if (gamepad == null) return;
+
         var vibration = new GamepadVibrationState
         {
             LeftLarge = Mathf.Clamp(leftMotor, 0f, 1f),
@@ -329,7 +352,7 @@ public static class InputManager
         {
             if (Time.GameTime >= stopTime && IsGamepadConnected)
             {
-                var gamepad2 = Input.Gamepads[(int)activeGamepad];
+                var gamepad2 = GetActiveGamepad();
                 gamepad2?.SetVibration(GamepadVibrationState.Default);
             }
         });
@@ -337,25 +360,21 @@ public static class InputManager
 
     public static Vector2 GetSmoothedAiming(float smoothingFactor = 0.8f)
     {
-        Vector2 rawAim = GetAiming();
+        var rawAim = GetAiming();
 
         if (rawAim.Length > StickDeadzone)
-        {
             smoothedAimCache = Vector2.Lerp(
                 smoothedAimCache,
                 rawAim,
                 Mathf.Clamp(smoothingFactor * Time.DeltaTime * 10f, 0f, 1f)
             );
-        }
         else
-        {
             // Decay when no input
             smoothedAimCache = Vector2.Lerp(
                 smoothedAimCache,
                 Vector2.Zero,
                 Mathf.Clamp(smoothingFactor * Time.DeltaTime * 5f, 0f, 1f)
             );
-        }
 
         return smoothedAimCache;
     }

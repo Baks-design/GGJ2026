@@ -1,28 +1,23 @@
-namespace GGJ2026.Gameplay.Character;
-
 using System;
-using System.Timers;
 using FlaxEngine;
+
+namespace GGJ2026.Gameplay.Character;
 
 public class PlayerController : Script
 {
     [Header("General Settings")]
     [Serialize, ShowInEditor] CharacterController controller;
-    [Serialize, ShowInEditor] AnimatedModel playerModel;
+    [Serialize, ShowInEditor] Actor playerModel;
     [Serialize, ShowInEditor] Actor cameraPivot;
     [Serialize, ShowInEditor] Camera mainCamera;
-
-    [Header("Input Settings")]
-    [Serialize, ShowInEditor] float movementSmoothing = 0.1f;
+    [Header("Aiming Settings")]
+    [Serialize, ShowInEditor] LayersMask targetsAims;
+    [Serialize, ShowInEditor] float targetAimCheckRadius = 10f;
     [Serialize, ShowInEditor] float aimSmoothing = 0.2f;
-    [Serialize, ShowInEditor] float gamepadDeadzone = 0.2f;
-
-    [Header("Mouse Settings")]
     [Serialize, ShowInEditor] float mouseCameraSpeed = 5f;
     [Serialize, ShowInEditor] float mouseCameraHeight = 5f;
     [Serialize, ShowInEditor] float mouseCameraDistance = 5f;
-
-    [Header("Gamepad Settings")]
+    [Serialize, ShowInEditor] float gamepadDeadzone = 0.2f;
     [Serialize, ShowInEditor] float gamepadAimSensitivity = 2f;
     [Serialize, ShowInEditor] float gamepadMovementSensitivity = 1.5f;
     [Serialize, ShowInEditor] float aimAssistStrength = 0.3f;
@@ -30,26 +25,23 @@ public class PlayerController : Script
     [Serialize, ShowInEditor] float gamepadCameraDistance = 8f;
     [Serialize, ShowInEditor] float gamepadCameraHeight = 4f;
     [Serialize, ShowInEditor] float gamepadCameraFollowSpeed = 8f;
-
     [Header("Movement Settings")]
+    [Serialize, ShowInEditor] float movementSmoothing = 40f;
     [Serialize, ShowInEditor] float gravityMultiplier = 2f;
     [Serialize, ShowInEditor] float moveSpeed = 5f;
     [Serialize, ShowInEditor] float rotationSpeed = 10f;
     [Serialize, ShowInEditor] float jumpForce = 7f;
-
-    [Header("Dash Settings")]
     [Serialize, ShowInEditor] float dashSpeed = 15f;
     [Serialize, ShowInEditor] float dashDuration = 0.2f;
     [Serialize, ShowInEditor] float dashCooldown = 1f;
-    [Serialize, ShowInEditor] ParticleSystem dashEffect;
-
+    //[Serialize, ShowInEditor] ParticleSystem dashEffect;
     [Header("Combat Settings")]
     [Serialize, ShowInEditor] Prefab projectilePrefab;
     [Serialize, ShowInEditor] Actor weaponPivot;
     [Serialize, ShowInEditor] Actor[] muzzlePoints;
-    [Serialize, ShowInEditor] ParticleSystem muzzleFlash;
-    [Serialize, ShowInEditor] AudioSource shootSound;
-    [Serialize, ShowInEditor] bool AutomaticFire = true;
+    //[Serialize, ShowInEditor] ParticleSystem muzzleFlash;
+    //[Serialize, ShowInEditor] AudioSource shootSound;
+    [Serialize, ShowInEditor] bool automaticFire = true;
     [Serialize, ShowInEditor] float fireRate = 0.15f;
     [Serialize, ShowInEditor] float projectileSpeed = 30f;
     [Serialize, ShowInEditor] int damagePerShot = 10;
@@ -57,142 +49,132 @@ public class PlayerController : Script
     [Serialize, ShowInEditor] float reloadTime = 1.5f;
     [Serialize, ShowInEditor] int maxAmmo = 30;
     [Serialize, ShowInEditor] int magazineSize = 10;
-    [Serialize, ShowInEditor] AudioSource reloadSound;
-    [Serialize, ShowInEditor] ParticleSystem reloadEffect;
-
-    AnimGraphParameter paramMoveSpeed;
-    AnimGraphParameter paramIsShooting;
-    AnimGraphParameter paramIsGrounded;
-    AnimGraphParameter paramVerticalVelocity;
-    AnimGraphParameter paramDash;
-
-    Vector3 velocity;
+    //[Serialize, ShowInEditor] AudioSource reloadSound;
+    //[Serialize, ShowInEditor] ParticleSystem reloadEffect;
+    Actor nearestEnemy = null;
+    // AnimGraphParameter paramMoveSpeed;
+    // AnimGraphParameter paramIsShooting;
+    // AnimGraphParameter paramIsGrounded;
+    // AnimGraphParameter paramVerticalVelocity;
+    // AnimGraphParameter paramDash;
+    // AnimGraphParameter paramIsReloading;
     Vector3 moveDirection;
     Vector3 aimDirection = Vector3.Forward;
     Vector3 dashDirection;
-    Vector2 smoothedMovement;
     Vector3 lastAimDirection = Vector3.Forward;
-    Actor nearestEnemy = null;
-
+    Vector2 smoothedMovement;
     float nextFireTime;
     float dashCooldownTimer;
     float dashTimer;
+    float reloadTimer = 0f;
     int currentMuzzle;
-    bool aimAssistActive = false;
-    bool isGrounded;
-    bool isShooting;
-    bool isDashing;
-    // Add these to your existing state variables
     int currentAmmo;
     int currentMagazine;
+    bool isShooting;
+    bool isDashing;
+    bool aimAssistActive = false;
     bool isReloading = false;
-    float reloadTimer = 0f;
-    AnimGraphParameter paramIsReloading;
+    Vector3 finalMoveVector;
+
+    public override void OnEnable() => InputManager.Initialize();
 
     public override void OnStart()
     {
         ValidateComponents();
-        SetAnimationsParams();
         SetCursor();
-        InputManager.Initialize();
-
-        // Initialize ammo
-        currentAmmo = maxAmmo;
-        currentMagazine = magazineSize;
+        AssignedValues();
+        //SetAnimationsParams();
     }
 
     void ValidateComponents()
     {
-        mainCamera = Camera.MainCamera;
+        if (mainCamera == null)
+            mainCamera = Camera.MainCamera;
 
         if (controller == null)
             controller = Actor.As<CharacterController>();
 
-        if (cameraPivot == null)
-        {
+        if (cameraPivot == null && controller != null)
             cameraPivot = new EmptyActor
             {
                 Name = "CameraPivot",
-                Parent = Actor,
+                Parent = controller,
                 LocalPosition = new Vector3(0f, 2f, 0f)
             };
-        }
 
         if (weaponPivot == null && playerModel != null)
-        {
             weaponPivot = new EmptyActor
             {
                 Name = "WeaponPivot",
                 Parent = playerModel,
                 LocalPosition = new Vector3(0f, 1.5f, 0f)
             };
-        }
     }
 
-    void SetAnimationsParams()
-    {
-        if (playerModel == null || playerModel.AnimationGraph == null)
-            return;
-
-        paramMoveSpeed = playerModel.GetParameter("MoveSpeed");
-        paramIsShooting = playerModel.GetParameter("IsShooting");
-        paramIsGrounded = playerModel.GetParameter("IsGrounded");
-        paramVerticalVelocity = playerModel.GetParameter("VerticalVelocity");
-        paramDash = playerModel.GetParameter("Dash");
-        paramIsReloading = playerModel.GetParameter("IsReloading"); // Add this
-    }
-
-    void SetCursor()
+    static void SetCursor()
     {
         Screen.CursorVisible = false;
         Screen.CursorLock = CursorLockMode.Locked;
     }
 
+    void AssignedValues()
+    {
+        currentAmmo = maxAmmo;
+        currentMagazine = magazineSize;
+    }
+
+    // void SetAnimationsParams()
+    // {
+    //     if (playerModel == null || playerModel.AnimationGraph == null)
+    //         return;
+
+    //     paramMoveSpeed = playerModel.GetParameter("MoveSpeed");
+    //     paramIsShooting = playerModel.GetParameter("IsShooting");
+    //     paramIsGrounded = playerModel.GetParameter("IsGrounded");
+    //     paramVerticalVelocity = playerModel.GetParameter("VerticalVelocity");
+    //     paramDash = playerModel.GetParameter("Dash");
+    //     paramIsReloading = playerModel.GetParameter("IsReloading"); 
+    // }
+
     public override void OnUpdate()
     {
-        InputManager.DetectInputType();
+        UpdateInputManager();
         HandleInput();
-        UpdateReload();
-        HandleCombat();
+        HandleRotation();
+        HandleAimAssist();
         HandleDash();
-        UpdateCamera();
-        UpdateAnimations();
-        UpdateAimAssist();
+        HandleCombat();
+        UpdateReload();
     }
+
+    static void UpdateInputManager() => InputManager.DetectInputType();
 
     void HandleInput()
     {
-        var rawMovement = InputManager.GetMovement();
-        smoothedMovement = Vector2.Lerp(
-            smoothedMovement,
-            rawMovement,
-            movementSmoothing * Time.DeltaTime * 20f
-        );
-
-        if (mainCamera == null) return;
+        var rawMovement = InputManager.GetMovement().Normalized;
+        var amount = movementSmoothing * Time.DeltaTime;
+        smoothedMovement = Vector2.Lerp(smoothedMovement, rawMovement, amount);
 
         var cameraForward = mainCamera.Transform.Forward;
-        var cameraRight = mainCamera.Transform.Right;
         cameraForward.Y = 0f;
-        cameraRight.Y = 0f;
         cameraForward.Normalize();
+        var cameraRight = mainCamera.Transform.Right;
+        cameraRight.Y = 0f;
         cameraRight.Normalize();
 
         moveDirection = (cameraForward * smoothedMovement.Y + cameraRight * smoothedMovement.X).Normalized;
-
-        if (InputManager.CurrentInputType == InputManager.InputType.Gamepad)
+        if (InputManager.CurrentInputType is InputManager.InputType.Gamepad)
             moveDirection *= gamepadMovementSensitivity;
 
-        var aimInput = InputManager.GetSmoothedAiming(aimSmoothing);
+        // var aimInput = InputManager.GetSmoothedAiming(aimSmoothing);
+        // if (InputManager.CurrentInputType is InputManager.InputType.KeyboardMouse)
+        //     HandleMouseAiming(aimInput);
+        // else
+        //     HandleGamepadAiming(aimInput);
 
-        if (InputManager.CurrentInputType == InputManager.InputType.KeyboardMouse)
-            HandleMouseAiming();
-        else
-            HandleGamepadAiming(aimInput);
-
-        if (InputManager.GetJumpDown() && isGrounded)
+        if (InputManager.GetJumpDown() && controller.IsGrounded)
         {
-            velocity.Y = jumpForce;
+            finalMoveVector.Y = Mathf.Sqrt(jumpForce * -2f * -Mathf.Abs(Physics.Gravity.Y * gravityMultiplier));
             InputManager.SetVibration(0.3f, 0.1f, 0.2f);
         }
 
@@ -204,35 +186,32 @@ public class PlayerController : Script
 
         // Shooting - only if not reloading and has ammo
         if (!isReloading && currentMagazine > 0)
-        {
-            isShooting = AutomaticFire ? InputManager.GetFire() : InputManager.GetFireDown();
-        }
+            isShooting = automaticFire ? InputManager.GetFire() : InputManager.GetFireDown();
         else
-        {
             isShooting = false;
-        }
 
         // Reload input - check if player pressed reload or tried to shoot with empty magazine
-        bool wantsToReload = InputManager.GetReload() ||
-                            (InputManager.GetFireDown() && currentMagazine == 0 && currentAmmo > 0);
+        var wantsToReload = InputManager.GetReload() ||
+                           (InputManager.GetFireDown() && currentMagazine == 0 && currentAmmo > 0);
         if (wantsToReload && !isReloading && currentAmmo > 0 && currentMagazine < magazineSize)
-        {
             StartReload();
-        }
     }
 
-    void HandleMouseAiming()
+    void HandleRotation()
     {
-        if (mainCamera == null) return;
+        var targetRotation = Quaternion.LookRotation(moveDirection);
+        var amount = rotationSpeed * Time.DeltaTime;
+        playerModel.Orientation = Quaternion.Slerp(playerModel.Orientation, targetRotation, amount);
+    }
 
-        var mousePos = Input.MousePosition;
+    void HandleMouseAiming(Vector2 mousePos)
+    {
         var ray = mainCamera.ConvertMouseToRay(mousePos);
-        var groundPlane = new Plane(Vector3.Up, Actor.Position);
-
+        var groundPlane = new Plane(Vector3.Up, controller.Position);
         if (groundPlane.Intersects(ref ray, out float distance))
         {
             var targetPoint = ray.GetPoint(distance);
-            aimDirection = (targetPoint - Actor.Position).Normalized;
+            aimDirection = (targetPoint - controller.Position).Normalized;
             aimDirection.Y = 0f;
             lastAimDirection = aimDirection;
         }
@@ -240,8 +219,6 @@ public class PlayerController : Script
 
     void HandleGamepadAiming(Vector2 aimInput)
     {
-        if (mainCamera == null) return;
-
         if (aimInput.Length > gamepadDeadzone)
         {
             // Convert gamepad input to world space
@@ -255,7 +232,7 @@ public class PlayerController : Script
             // Apply aim assist if active
             if (aimAssistActive && nearestEnemy != null)
             {
-                var toEnemy = (nearestEnemy.Position - Actor.Position).Normalized;
+                var toEnemy = (nearestEnemy.Position - controller.Position).Normalized;
                 toEnemy.Y = 0f;
 
                 // Blend between stick input and aim assist
@@ -263,9 +240,7 @@ public class PlayerController : Script
                 aimDirection = Vector3.Lerp(stickDirection, toEnemy, aimAssistStrength).Normalized;
             }
             else
-            {
                 aimDirection = (cameraForward * aimInput.Y + cameraRight * aimInput.X).Normalized;
-            }
 
             lastAimDirection = aimDirection;
 
@@ -273,36 +248,46 @@ public class PlayerController : Script
             aimDirection *= gamepadAimSensitivity;
         }
         else
-        {
             // Maintain last aim direction when no input (for gamepad)
             aimDirection = lastAimDirection;
-        }
     }
 
-    void UpdateAimAssist()
+    void HandleAimAssist()
     {
-        // Find nearest enemy for aim assist
-        var enemies = Level.FindActors(Tag.Default, true);
-        var nearestDistance = float.MaxValue;
         nearestEnemy = null;
+        aimAssistActive = false;
 
-        foreach (var enemy in enemies)
+        if (Physics.OverlapSphere(
+            controller.Position,
+            targetAimCheckRadius,
+            out Collider[] results,
+            targetsAims,
+            false))
         {
-            if (enemy == null) continue;
+            var nearestDistance = float.MaxValue;
 
-            var toEnemy = enemy.Position - Actor.Position;
-            var distance = toEnemy.Length;
-
-            // Check if enemy is in front of player
-            var directionToEnemy = toEnemy.Normalized;
-            var dot = Vector3.Dot(aimDirection, directionToEnemy);
-
-            if (distance < 10f && dot > aimSnapThreshold)
+            // Check each found collider
+            foreach (var collider in results)
             {
-                if (distance < nearestDistance)
+                if (collider == null) continue;
+
+                // Get the actor from collider
+                var enemyActor = collider;
+                if (enemyActor == null || enemyActor == Actor) continue;
+
+                // Calculate direction and distance
+                var toEnemy = enemyActor.Position - controller.Position;
+                var distance = toEnemy.Length;
+                if (distance > 0.01f)
                 {
-                    nearestDistance = distance;
-                    nearestEnemy = enemy;
+                    // Check if enemy is in front (within aim cone)
+                    var directionToEnemy = toEnemy / distance;
+                    var dot = Vector3.Dot(aimDirection, directionToEnemy);
+                    if (dot > aimSnapThreshold && distance < nearestDistance)
+                    {
+                        nearestDistance = distance;
+                        nearestEnemy = enemyActor;
+                    }
                 }
             }
         }
@@ -316,61 +301,53 @@ public class PlayerController : Script
         reloadTimer = reloadTime;
 
         // Play reload sound
-        reloadSound?.Play();
-
+        //reloadSound?.Play();
         // Play reload effect
-        reloadEffect?.Spawn(Actor.Position);
-
+        //reloadEffect?.Spawn(controller.Position);
         // Set animation parameter
-        if (paramIsReloading != null)
-            paramIsReloading.Value = true;
+        //paramIsReloading.Value = true;
 
         // Gamepad vibration for reload
-        if (InputManager.CurrentInputType == InputManager.InputType.Gamepad)
+        if (InputManager.CurrentInputType is InputManager.InputType.Gamepad)
             InputManager.SetVibration(0.2f, 0.1f, 0.3f);
     }
 
     void CompleteReload()
     {
-        int ammoNeeded = magazineSize - currentMagazine;
-        int ammoToLoad = Math.Min(ammoNeeded, currentAmmo);
-
+        var ammoNeeded = magazineSize - currentMagazine;
+        var ammoToLoad = Math.Min(ammoNeeded, currentAmmo);
         currentMagazine += ammoToLoad;
         currentAmmo -= ammoToLoad;
 
         isReloading = false;
 
         // Reset animation parameter
-        if (paramIsReloading != null)
-            paramIsReloading.Value = false;
+        //paramIsReloading.Value = false;
 
         Debug.Log($"Reloaded! Magazine: {currentMagazine}/{magazineSize}, Ammo: {currentAmmo}/{maxAmmo}");
     }
 
     void UpdateReload()
     {
-        if (isReloading)
-        {
-            reloadTimer -= Time.DeltaTime;
-            if (reloadTimer <= 0f)
-            {
-                CompleteReload();
-            }
-        }
+        if (!isReloading) return;
+
+        reloadTimer -= Time.DeltaTime;
+        if (reloadTimer <= 0f)
+            CompleteReload();
     }
 
     void HandleCombat()
     {
-        if (isShooting && Time.GameTime >= nextFireTime)
-        {
-            Shoot();
-            nextFireTime = (float)Time.GameTime + fireRate;
+        if (!isShooting || Time.GameTime < nextFireTime) return;
 
-            // Gamepad vibration on shoot
-            if (InputManager.CurrentInputType == InputManager.InputType.Gamepad)
-                InputManager.SetVibration(0.2f, 0.4f, 0.1f);
-        }
+        Shoot();
+        nextFireTime = Time.GameTime + fireRate;
+
+        // Gamepad vibration on shoot
+        if (InputManager.CurrentInputType is InputManager.InputType.Gamepad)
+            InputManager.SetVibration(0.2f, 0.4f, 0.1f);
     }
+
     void Shoot()
     {
         if (currentMagazine <= 0) return;
@@ -378,37 +355,21 @@ public class PlayerController : Script
         var muzzle = muzzlePoints[currentMuzzle];
 
         var projectile = PrefabManager.SpawnPrefab(
-            projectilePrefab,
-            muzzle.Position,
-            muzzle.Orientation
-        );
+            projectilePrefab, muzzle.Position, Quaternion.Identity, new Vector3(0.1f, 0.1f, 0.1f));
+        projectile.TryGetScript<Projectile>(out var projectileScript);
+        projectileScript?.Initialize(damagePerShot, projectileSpeed, 5f, controller);
 
-        if (projectile != null)
-        {
-            projectile.TryGetScript<Projectile>(out var projectileScript);
-            projectileScript?.Initialize(damagePerShot, projectileSpeed, Actor);
-        }
+        //var flash = muzzleFlash.Spawn(muzzle.Position, muzzle.Orientation);
+        //flash.Parent = muzzle;
 
-        if (muzzleFlash != null)
-        {
-            var flash = muzzleFlash.Spawn(muzzle.Position, muzzle.Orientation);
-            flash.Parent = muzzle;
-        }
+        //shootSound?.Play();
 
-        shootSound?.Play();
-
-        // Consume ammo
         currentMagazine--;
-
         // Cycle muzzle points
         currentMuzzle = (currentMuzzle + 1) % muzzlePoints.Length;
-
         // Check if magazine is empty
         if (currentMagazine == 0 && currentAmmo > 0)
-        {
-            // Auto-reload if ammo is available
             StartReload();
-        }
     }
 
     void HandleDash()
@@ -423,9 +384,7 @@ public class PlayerController : Script
             }
         }
         else if (dashCooldownTimer > 0f)
-        {
             dashCooldownTimer -= Time.DeltaTime;
-        }
     }
 
     void StartDash()
@@ -433,130 +392,94 @@ public class PlayerController : Script
         isDashing = true;
         dashTimer = dashDuration;
         dashDirection = moveDirection;
+        //dashEffect?.Spawn(controller.Position);
+        //paramDash.Value = true;
+    }
 
-        dashEffect?.Spawn(Actor.Position);
-
-        if (paramDash != null)
-            paramDash.Value = true;
+    public override void OnLateFixedUpdate()
+    {
+        UpdateCamera();
+        //UpdateAnimations();
     }
 
     void UpdateCamera()
     {
-        if (mainCamera == null || cameraPivot == null) return;
-
-        // Adjust camera based on input type
-        var distance = InputManager.CurrentInputType == InputManager.InputType.Gamepad
+        // Check values
+        var distance = InputManager.CurrentInputType is InputManager.InputType.Gamepad
             ? gamepadCameraDistance
             : mouseCameraDistance;
-
-        var height = InputManager.CurrentInputType == InputManager.InputType.Gamepad
+        var height = InputManager.CurrentInputType is InputManager.InputType.Gamepad
             ? gamepadCameraHeight
             : mouseCameraHeight;
-
-        var speed = InputManager.CurrentInputType == InputManager.InputType.Gamepad
+        var speed = InputManager.CurrentInputType is InputManager.InputType.Gamepad
             ? gamepadCameraFollowSpeed
             : mouseCameraSpeed;
+        var amount = speed * Time.DeltaTime;
 
-        // Update camera pivot
-        cameraPivot.Position = Vector3.Lerp(
-            cameraPivot.Position,
-            Actor.Position + new Vector3(0f, 2f, 0f),
-            speed * Time.DeltaTime
-        );
+        // Calculate camera pivot position
+        var cameraTarget = controller.Position + new Vector3(0f, 2f, 0f);
+        cameraPivot.Position = Vector3.Lerp(cameraPivot.Position, cameraTarget, amount);
 
         // Calculate camera position with gamepad-specific offset
         var cameraOffset = -aimDirection * distance + Vector3.Up * height;
-
-        // Add slight lead for gamepad (predictive camera)
-        if (InputManager.CurrentInputType == InputManager.InputType.Gamepad && moveDirection.Length > 0.1f)
+        if (InputManager.CurrentInputType is InputManager.InputType.Gamepad && moveDirection.Length > 0.1f)
             cameraOffset += moveDirection * 2f;
 
+        // Set position to camera
         var targetPosition = cameraPivot.Position + cameraOffset;
-        mainCamera.Position = Vector3.Lerp(
-            mainCamera.Position,
-            targetPosition,
-            speed * Time.DeltaTime
-        );
-
-        // Look at player with height offset
-        var lookTarget = Actor.Position + new Vector3(0f, 1.5f, 0f);
-        mainCamera.LookAt(lookTarget);
+        mainCamera.Position = Vector3.Lerp(mainCamera.Position, targetPosition, amount);
     }
 
-    void UpdateAnimations()
-    {
-        if (paramMoveSpeed != null)
-            paramMoveSpeed.Value = moveDirection.Length;
-
-        if (paramIsShooting != null)
-            paramIsShooting.Value = isShooting;
-
-        if (paramIsGrounded != null)
-            paramIsGrounded.Value = isGrounded;
-
-        if (paramVerticalVelocity != null)
-            paramVerticalVelocity.Value = velocity.Y;
-
-        if (paramIsReloading != null)
-            paramIsReloading.Value = isReloading;
-    }
+    // void UpdateAnimations()
+    // {
+    //     paramMoveSpeed.Value = moveDirection.Length;
+    //     paramIsShooting.Value = isShooting;
+    //     paramIsGrounded.Value = isGrounded;
+    //     paramVerticalVelocity.Value = velocity.Y;
+    //     paramIsReloading.Value = isReloading;
+    // }
 
     public override void OnFixedUpdate()
     {
         HandleMovement();
         HandleGravity();
+        ApplyMovement();
     }
 
     void HandleMovement()
     {
-        if (controller == null) return;
-
-        if (isDashing)
+        if (moveDirection != Vector3.Zero)
         {
-            controller.Move(dashDirection * dashSpeed * Time.DeltaTime);
+            finalMoveVector.X = moveDirection.X * moveSpeed;
+            finalMoveVector.Z = moveDirection.Z * moveSpeed;
+            if (controller.IsGrounded)
+                finalMoveVector.Y += moveDirection.Y * moveSpeed;
         }
-        else if (moveDirection.Length > 0.1f)
+        else if (moveDirection != Vector3.Zero && isDashing)
         {
-            var movement = moveDirection * moveSpeed * Time.DeltaTime;
-            controller.Move(movement);
-
-            if (playerModel != null)
-            {
-                var targetRotation = Quaternion.LookRotation(moveDirection);
-                playerModel.Orientation = Quaternion.Slerp(
-                    playerModel.Orientation,
-                    targetRotation,
-                    rotationSpeed * Time.DeltaTime
-                );
-            }
+            finalMoveVector.X = dashDirection.X * dashSpeed;
+            finalMoveVector.Z = dashDirection.Z * dashSpeed;
+            if (controller.IsGrounded)
+                finalMoveVector.Y += dashDirection.Y * moveSpeed;
         }
-
-        controller.Move(velocity * Time.DeltaTime);
     }
 
     void HandleGravity()
     {
-        if (controller == null) return;
-
-        if (controller.IsGrounded)
-        {
-            isGrounded = true;
-            velocity.Y = -2f;
-        }
+        if (controller.IsGrounded && finalMoveVector.Y <= 0f)
+            finalMoveVector.Y = -2f;
         else
-        {
-            isGrounded = false;
-            velocity.Y -= Mathf.Abs(Physics.Gravity.Y * gravityMultiplier) * Time.DeltaTime;
-        }
+            finalMoveVector.Y -= Mathf.Abs(Physics.Gravity.Y * gravityMultiplier) * Time.DeltaTime;
     }
+
+    void ApplyMovement() => controller.Move(finalMoveVector * Time.DeltaTime);
+
+    public override void OnDisable() => InputManager.Dispose();
 
     public override void OnDebugDraw()
     {
-        // Draw aim assist visualization
+        DebugDraw.DrawWireSphere(new BoundingSphere(controller.Position, targetAimCheckRadius), Color.Yellow);
         if (aimAssistActive && nearestEnemy != null)
-        {
-            DebugDraw.DrawLine(Actor.Position + Vector3.Up, nearestEnemy.Position, Color.Yellow);
-            DebugDraw.DrawWireSphere(new BoundingSphere(nearestEnemy.Position, 1f), Color.Yellow);
-        }
+            DebugDraw.DrawLine(controller.Position + Vector3.Up, nearestEnemy.Position, Color.Red);
     }
 }

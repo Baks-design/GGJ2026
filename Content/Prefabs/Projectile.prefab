@@ -6,22 +6,46 @@
 	{
 		"ID": "393e1fbb4903a5a85b56caa15429106f",
 		"TypeName": "FlaxEngine.RigidBody",
-		"ParentID": "00000000000000000000000000000000",
 		"Name": "Projectile",
+		"Transform": {
+			"Scale": {
+				"X": 0.10000000149011612,
+				"Y": 0.10000000149011612,
+				"Z": 0.10000000149011612
+			}
+		},
+		"StaticFlags": 0,
 		"Mass": 523.5988159179688,
 		"EnableGravity": false
+	},
+	{
+		"ID": "c145f5074d4b028f8ffe5eb7ac77a24f",
+		"TypeName": "GGJ2026.Gameplay.Character.Projectile",
+		"ParentID": "393e1fbb4903a5a85b56caa15429106f",
+		"V": {
+	"rigidBody": "393e1fbb4903a5a85b56caa15429106f",
+	"targetCollider": "8ce44e30428dd5bbc97bcbb7b30fd78c",
+	"collisionLayers": {
+		"Mask": 4
+	},
+	"speed": 10000000.0,
+	"lifetime": 6.0
+}
 	},
 	{
 		"ID": "8ce44e30428dd5bbc97bcbb7b30fd78c",
 		"TypeName": "FlaxEngine.SphereCollider",
 		"ParentID": "393e1fbb4903a5a85b56caa15429106f",
-		"Name": "SphereCollider"
+		"Name": "SphereCollider",
+		"StaticFlags": 0,
+		"ContactOffset": 0.10000000149011612
 	},
 	{
 		"ID": "29166856469a8d1a0cc8e6ae1cd1200b",
 		"TypeName": "FlaxEngine.StaticModel",
 		"ParentID": "393e1fbb4903a5a85b56caa15429106f",
 		"Name": "StaticModel",
+		"StaticFlags": 0,
 		"Model": "dd86c4724bf734c4959d23b3c74faa05",
 		"Buffer": {
 			"Entries": [
